@@ -1,1 +1,1 @@
-# Cg-Project
+# Solar System Opengl
