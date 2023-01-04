@@ -15,39 +15,44 @@ namespace GLMAIN {
 	GLint planetLocaionLoc, planetColorLoc, radiusLoc, mvpLoc, mvLoc,
         lightAmbientLoc, reflectAmbientLoc, lightPosLoc;
     GLuint elementBufferHandle;
-    int highlightSphere = -1;
+    int highlightSphere = -3;
 
 	// Store the locations of 6 spheres
-	float planetlocations[6][3]=
+	float planetlocations[9][3]=
     {
         {0.0f, 0.0f , 0.0f},
         {0.0f, 6.0f , 0.0f},
-        {0.0f, 10.0f , 0.0f},
-        {0.0f, 14.0f , 0.0f},
+        {0.0f, 12.0f , 0.0f},
         {0.0f, 18.0f , 0.0f},
-        {0.0f, 25.0f , 0.0f}
+        {0.0f, 24.0f , 0.0f},
+        {0.0f, 35.0f , 0.0f},
+        {0.0f, 42.0f, 0.0f},
+        {0.0f, 50.0f, 0.0f},
+        {0.0f, 58.0f, 0.0f}
     };
     // Store the radius of 6 spheres
-    float planerRadius[6] = {3.0f, 0.8f, 1.0f, 1.2f, 0.6f, 1.5f};
+    float planerRadius[9] = {9.55f/2.0f, 2.02f/2.0f, 3.75f/2.0f, 3.88f/2.0f, 3.39f/2.0f, 5.44f/2.0f, 4.90f/2.0f, 4.01f/2.0f, 4.01f/2.0f};
     // Store the rotate speed of 6 spheres
-    float planetSpeed[6] = {3.0f, 2.0f, 2.5f, 1.2f, 1.5f, 1.0f};
+    float planetSpeed[9] = {3.0f, 2.0f, 2.5f, 1.2f, 1.5f, .75f, .90f, 1.0f, 1.0f};
     // Store the angles of 6 spheres
-    float planetAngle[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    float planetAngle[9] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f, 90.0f, 0.0f};
     // Store the distances to the star of the 6 spheres
-    float planetDistance[6] = {0.0f, 6.0f, 10.0f, 14.0f, 18.0f, 25.0f}; // Planetdistance to the star.
+    float planetDistance[9] = {0.0f, 8.0f, 12.0f, 18.0f, 24.0f, 35.0f, 42.0f, 50.0f, 58.0f}; // Planetdistance to the star.
     // Store the base colors  of the 6 spheres
-    float planetColor[6][3]=
+    float planetColor[9][3]=
     {
         {1.0f, 1.0f , 1.0f},
         {1.0f, 1.0f , 0.0f},
         {1.0f, 0.0f , 1.0f},
         {0.0f, 0.0f , 1.0f},
         {0.0f, 1.0f , 0.0f},
-        {1.0f, 0.0f , 0.0f}
+        {1.0f, 0.0f , 0.0f},
+        {1.0f, .5f , 0.0f},
+        {2.5f, .5f , .5f},
+        {2.5f, 1.0f , .5f}
     };
 
     // Points and faces of icosphere
-    //AAAAAAAAAAA
     const float X=0.525731112119133606f;
     const float Z=0.850650808352039932f;
     const float N=0.0f;
@@ -75,7 +80,7 @@ void calcLocations()
 {
     if(GLMAIN::paused)
         return;
-    for (int i = 0 ; i < 6; i ++)
+    for (int i = 0 ; i < 9; i ++)
     {
         GLMAIN::planetAngle[i] +=  GLMAIN::planetSpeed[i];
         while (GLMAIN::planetAngle[i] > 360.0)
@@ -183,7 +188,7 @@ void display(void)
 	glBindVertexArray(GLMAIN::vao);
     glPatchParameteri(GL_PATCH_VERTICES, 3);
     // Draw 6 spheres, the first one is the star
-	for(int i = 0; i < 6; i ++)
+	for(int i = 0; i < 9; i ++)
 	{
         glLoadName(i);
         // set planet location
@@ -419,7 +424,7 @@ void updateHighlightSphere()
     getMaxFlagfromRGB(maxFlagPixel, pixelRGB);
 
     int i;
-    for(i = 0; i < 6; i ++)
+    for(i = 0; i < 9; i ++)
     {
         bool maxFlagSphere[3];
         getMaxFlagfromRGB(maxFlagSphere, GLMAIN::planetColor[i]);
@@ -437,7 +442,7 @@ void updateHighlightSphere()
     }
 
     GLMAIN::highlightSphere = i; // i is the found sphere, if it is 6, match failed, no object is selected.
-    if(i < 6)
+    if(i < 9)
         printf("debug: the sphere %d is hovered\n", i);
     return;
 }
