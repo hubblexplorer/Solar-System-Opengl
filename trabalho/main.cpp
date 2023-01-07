@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 #include"textFile.h"
+#include <GL/glut.h>
 
 
 namespace GLMAIN {
@@ -13,7 +14,7 @@ namespace GLMAIN {
 	GLuint vao;					// Storage For vao
 	// Storage locations of uniforms
 	GLint planetLocaionLoc, planetColorLoc, radiusLoc, mvpLoc, mvLoc,
-        lightAmbientLoc, reflectAmbientLoc, lightPosLoc;
+        lightAmbientLoc, reflectAmbientLoc, lightPosLoc, planetAngleloc;
     GLuint elementBufferHandle;
     int highlightSphere = -3;
 
@@ -42,16 +43,17 @@ namespace GLMAIN {
     float planetColor[9][3]=
     {
         {1.0f, 1.0f , 1.0f},
+        {1.0f, 0.0f , 0.0f},
+        {0.0f, 1.0f , 0.0f},
+        {0.0f, 0.0f , 1.0f},
         {1.0f, 1.0f , 0.0f},
         {1.0f, 0.0f , 1.0f},
-        {0.0f, 0.0f , 1.0f},
-        {0.0f, 1.0f , 0.0f},
-        {1.0f, 0.0f , 0.0f},
-        {1.0f, .5f , 0.0f},
-        {2.5f, .5f , .5f},
-        {2.5f, 1.0f , .5f}
+        {.8f, .4f , .1f}, //problematico
+        {0.0f, .5f , .5f},
+        {0.5f, .5f , .5f} //problematico
     };
 
+    
     // Points and faces of icosphere
     const float X=0.525731112119133606f;
     const float Z=0.850650808352039932f;
@@ -131,7 +133,7 @@ void display(void)
 
 
     	// Init view matrix
-	const glm::vec3 camPos(-30, 0, 10);// camera position
+	const glm::vec3 camPos(-60, 0, 45);// camera position
 	const glm::vec3 lookAt(0.0, 0.0, 0.0);
 	const glm::vec3 camOffset = lookAt - camPos;
 	const glm::vec3 camForward = camOffset /
@@ -190,6 +192,7 @@ void display(void)
     // Draw 6 spheres, the first one is the star
 	for(int i = 0; i < 9; i ++)
 	{
+        
         glLoadName(i);
         // set planet location
         if(GLMAIN::planetLocaionLoc != -1)
@@ -200,7 +203,8 @@ void display(void)
         // set color od current sphere
         if(GLMAIN::planetColorLoc != -1)
             glUniform3fv(GLMAIN::planetColorLoc, 1, GLMAIN::planetColor[i]);
-        // Set ambient light
+        
+        
         if(GLMAIN::lightAmbientLoc != -1 && GLMAIN::reflectAmbientLoc != -1)
         {
             if(i == 0) // It is the star
@@ -229,6 +233,7 @@ void display(void)
                 glUniform3fv(GLMAIN::reflectAmbientLoc, 1, ra);
             }
         }
+        
         // Set point light
         if(GLMAIN::lightPosLoc != -1)
         {
@@ -243,7 +248,11 @@ void display(void)
 	glfwSwapBuffers(GLMAIN::window);
 	glfwPollEvents();
 }
-
+void planetRotation(){
+    for (int i = 1; i<9;i++){
+        glRotatef(GLMAIN::planetAngle[i], .0f, .0f, 1.0f);
+    }
+}
 
 void initVAO() // Init vao, vbo.
 {
@@ -286,7 +295,7 @@ int setShaders()
 
 	vs = textFileRead((char *)"test.vert");   // vertex shader
 	fs = textFileRead((char *)"test.frag");   // fragment shader
-    	cs = textFileRead((char *)"test.cont");   // TCS shader
+    cs = textFileRead((char *)"test.cont");   // TCS shader
 	es = textFileRead((char *)"test.eval");   // TES shader
 	gs = textFileRead((char *)"test.gs");     // Geometry shader
 
