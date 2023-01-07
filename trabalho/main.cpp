@@ -19,7 +19,7 @@ namespace GLMAIN {
     int highlightSphere = -3;
 
 	// Store the locations of 6 spheres
-	float planetlocations[9][3]=
+	float planetlocations[10][3]=
     {
         {0.0f, 0.0f , 0.0f},
         {0.0f, 6.0f , 0.0f},
@@ -29,18 +29,19 @@ namespace GLMAIN {
         {0.0f, 35.0f , 0.0f},
         {0.0f, 42.0f, 0.0f},
         {0.0f, 50.0f, 0.0f},
-        {0.0f, 58.0f, 0.0f}
+        {0.0f, 58.0f, 0.0f},
+        {0.0f,3.0f, 0.0f}
     };
     // Store the radius of 6 spheres
-    float planerRadius[9] = {9.55f/2.0f, 2.02f/2.0f, 3.75f/2.0f, 3.88f/2.0f, 3.39f/2.0f, 5.44f/2.0f, 4.90f/2.0f, 4.01f/2.0f, 4.01f/2.0f};
+    float planerRadius[10] = {9.55f/2.0f, 2.02f/2.0f, 3.75f/2.0f, 3.88f/2.0f, 3.39f/2.0f, 5.44f/2.0f, 4.90f/2.0f, 4.01f/2.0f, 4.01f/2.0f, 1.f/2.0f};
     // Store the rotate speed of 6 spheres
-    float planetSpeed[9] = {3.0f, 2.0f, 2.5f, 1.2f, 1.5f, .75f, .90f, 1.0f, 1.0f};
+    float planetSpeed[10] = {3.0f, 2.0f, 2.5f, 1.2f, 1.5f, .75f, .90f, 1.0f, 1.0f, 3.0f};
     // Store the angles of 6 spheres
-    float planetAngle[9] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f, 90.0f, 0.0f};
+    float planetAngle[10] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f, 90.0f, 0.0f, 0.0f};
     // Store the distances to the star of the 6 spheres
-    float planetDistance[9] = {0.0f, 8.0f, 12.0f, 18.0f, 24.0f, 35.0f, 42.0f, 50.0f, 58.0f}; // Planetdistance to the star.
+    float planetDistance[10] = {0.0f, 8.0f, 12.0f, 18.0f, 24.0f, 35.0f, 42.0f, 50.0f,  58.0f, 3.0f}; // Planetdistance to the star.
     // Store the base colors  of the 6 spheres
-    float planetColor[9][3]=
+    float planetColor[10][3]=
     {
         {1.0f, 1.0f , 1.0f},
         {1.0f, 0.0f , 0.0f},
@@ -50,7 +51,8 @@ namespace GLMAIN {
         {1.0f, 0.0f , 1.0f},
         {.8f, .4f , .1f}, //problematico
         {0.0f, .5f , .5f},
-        {0.5f, .5f , .5f} //problematico
+        {0.5f, .5f , .5f}, //problematico
+        {0.7f,0.7f,0.7f}
     };
 
     
@@ -91,6 +93,13 @@ void calcLocations()
         GLMAIN::planetlocations[i][0] = sin(tempAngle) * GLMAIN::planetDistance[i];
         GLMAIN::planetlocations[i][1] = cos(tempAngle) * GLMAIN::planetDistance[i];
     }
+    int i =9;
+    GLMAIN::planetAngle[i] +=  GLMAIN::planetSpeed[i];
+        while (GLMAIN::planetAngle[i] > 360.0)
+            GLMAIN::planetAngle[i] -= 360.0;
+        float tempAngle = (GLMAIN::planetAngle[i] / 180.0) * 3.14159;
+        GLMAIN::planetlocations[i][0] = GLMAIN::planetlocations[3][0] + sin(tempAngle) * GLMAIN::planetDistance[i];
+        GLMAIN::planetlocations[i][1] = GLMAIN::planetlocations[3][1] +cos(tempAngle) * GLMAIN::planetDistance[i];
 }
 
 
@@ -120,7 +129,9 @@ void initPerspective(glm::mat4 & m)
     m[3][3] = 0.0f;
 }
 
-
+float x = -60;
+float y = 0;
+float z = 45;
 // Display method, draw six spheres.
 void display(void)
 {
@@ -133,7 +144,7 @@ void display(void)
 
 
     	// Init view matrix
-	const glm::vec3 camPos(-60, 0, 45);// camera position
+	const glm::vec3 camPos(x, y, z);// camera position
 	const glm::vec3 lookAt(0.0, 0.0, 0.0);
 	const glm::vec3 camOffset = lookAt - camPos;
 	const glm::vec3 camForward = camOffset /
@@ -190,13 +201,18 @@ void display(void)
 	glBindVertexArray(GLMAIN::vao);
     glPatchParameteri(GL_PATCH_VERTICES, 3);
     // Draw 6 spheres, the first one is the star
-	for(int i = 0; i < 9; i ++)
+	for(int i = 0; i < 10; i ++)
 	{
         
         glLoadName(i);
         // set planet location
-        if(GLMAIN::planetLocaionLoc != -1)
+        if(GLMAIN::planetLocaionLoc != -1){
+            
             glUniform3fv(GLMAIN::planetLocaionLoc, 1, &GLMAIN::planetlocations[i][0]);
+        }
+        
+        
+        
         // set the raduis of current sphere
         if(GLMAIN::radiusLoc != -1)
             glUniform1f(GLMAIN::radiusLoc, GLMAIN::planerRadius[i]);
@@ -242,17 +258,25 @@ void display(void)
         }
         glDrawElements(GL_PATCHES, sizeof(GLMAIN::Faces),  GL_UNSIGNED_INT,  (void*)0 );
 	}
+    
+    
 
     // Update highlight sphere here and in next display the new highlighted sphere could be seen.
     updateHighlightSphere();
 	glfwSwapBuffers(GLMAIN::window);
 	glfwPollEvents();
+    for (int i = 0; i < 10; i++)
+    {
+        glRotatef(GLMAIN::planetAngle[i], 0.0f, 0.0f,1.0f);
+    }
+    
+    
 }
-void planetRotation(){
-    for (int i = 1; i<9;i++){
+/*void planetRotation(){
+    for (int i = 1; i<10;i++){
         glRotatef(GLMAIN::planetAngle[i], .0f, .0f, 1.0f);
     }
-}
+}*/
 
 void initVAO() // Init vao, vbo.
 {
@@ -376,11 +400,25 @@ int setShaders()
 
 
 // callback of key event
+
+
 void keyfunc(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
+{   
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS )  // If space key is pressed, pause/resume animation
     {
         GLMAIN::paused = !GLMAIN::paused;
+    }
+    else if (key == GLFW_KEY_UP && action == GLFW_PRESS){
+        if (x < -20){
+            x += 5;
+            z -= 5;
+            }
+    }
+    else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS){
+        if (x > -60){
+            x -= 5;
+            z += 5;
+            }
     }
 }
 
@@ -433,7 +471,7 @@ void updateHighlightSphere()
     getMaxFlagfromRGB(maxFlagPixel, pixelRGB);
 
     int i;
-    for(i = 0; i < 9; i ++)
+    for(i = 0; i < 10; i ++)
     {
         bool maxFlagSphere[3];
         getMaxFlagfromRGB(maxFlagSphere, GLMAIN::planetColor[i]);
@@ -451,7 +489,7 @@ void updateHighlightSphere()
     }
 
     GLMAIN::highlightSphere = i; // i is the found sphere, if it is 6, match failed, no object is selected.
-    if(i < 9)
+    if(i < 10)
         printf("debug: the sphere %d is hovered\n", i);
     return;
 }
