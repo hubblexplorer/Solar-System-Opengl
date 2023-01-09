@@ -28,38 +28,43 @@ namespace GLMAIN
     int highlightSphere = -3;
 
     // Store the locations of 6 spheres
-    float planetlocations[10][3] =
+    float planetlocations[12][3] =
         {
             {0.0f, 0.0f, 0.0f},
-            {0.0f, 6.0f, 0.0f},
-            {0.0f, 12.0f, 0.0f},
-            {0.0f, 18.0f, 0.0f},
-            {0.0f, 24.0f, 0.0f},
-            {0.0f, 35.0f, 0.0f},
-            {0.0f, 42.0f, 0.0f},
+            {0.0f, 10.0f, 0.0f},
+            {0.0f, 16.0f, 0.0f},
+            {0.0f, 25.0f, 0.0f},
+            {0.0f, 34.0f, 0.0f},
             {0.0f, 50.0f, 0.0f},
-            {0.0f, 58.0f, 0.0f},
-            {0.0f, 3.0f, 0.0f}};
+            {0.0f, 65.0f, 0.0f},
+            {0.0f, 71.0f, 0.0f},
+            {0.0f, 77.0f, 0.0f},
+            {0.0f, 3.0f, 0.0f},
+            {0.0f, 3.0f, 0.0f},
+            {0.0f, 5.0f, 0.0f}};
     // Store the radius of 6 spheres
-    float planerRadius[10] = {9.55f / 2.0f, 2.02f / 2.0f, 3.75f / 2.0f, 3.88f / 2.0f, 3.39f / 2.0f, 5.44f / 2.0f, 4.90f / 2.0f, 4.01f / 2.0f, 4.01f / 2.0f, 1.f / 2.0f};
+    float planerRadius[12] = {9.55f / 2.0f, 2.02f / 2.0f, 3.75f / 2.0f, 3.88f / 2.0f, 3.39f / 2.0f, 5.44f / 2.0f, 4.90f / 2.0f, 4.01f / 2.0f, 4.01f / 2.0f, 1.f / 2.0f, 1.f / 2.0f, 1.f / 2.0f};
     // Store the rotate speed of 6 spheres
-    float planetSpeed[10] = {3.0f, 2.0f, 2.5f, 1.2f, 1.5f, .75f, .90f, 1.0f, 1.0f, 3.0f};
+    float planetSpeed[12] = {0.0f, 4.5f, 3.5f, 3.0f, 2.5f, 1.0f, .75f, .65f, .60f, 5.0f, 5.0f, 4.0f};
     // Store the angles of 6 spheres
-    float planetAngle[10] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f, 90.0f, 0.0f, 0.0f};
+    float planetAngle[12] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 45.0f, 90.0f, 0.0f, 0.0f, 0.0f, 0.0f};
     // Store the distances to the star of the 6 spheres
-    float planetDistance[10] = {0.0f, 8.0f, 12.0f, 18.0f, 24.0f, 35.0f, 42.0f, 50.0f, 58.0f, 3.0f}; // Planetdistance to the star.
+    float planetDistance[12] = {0.0f, 10.0f, 16.0f, 25.0f, 34.0f, 50.0f, 65.0f, 71.0f, 77.0f, 3.0f, 3.0f, 5.0f}; // Planetdistance to the star.
     // Store the base colors  of the 6 spheres
-    float planetColor[9][3] =
+    float planetColor[12][3] =
         {
             {1.0f, 1.0f, 1.0f},
+            {1.0f, 0.0f, 0.0f},
+            {0.0f, 1.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f},
             {1.0f, 1.0f, 0.0f},
             {1.0f, 0.0f, 1.0f},
-            {0.0f, 0.0f, 1.0f},
-            {0.0f, 1.0f, 0.0f},
-            {1.0f, 0.0f, 0.0f},
-            {1.0f, .5f, 0.0f},
-            {2.5f, .5f, .5f},
-            {2.5f, 1.0f, .5f}};
+            {.8f, .4f, .1f}, // problematico
+            {0.0f, .5f, .5f},
+            {0.5f, .5f, .5f}, // problematico
+            {0.7f, 0.7f, 0.7f},
+            {0.7f, 0.7f, 0.7f},
+            {0.7f, 0.7f, 0.7f}};
 
     struct Texture
     {
@@ -89,16 +94,14 @@ char texts[9][18] = {
     "textos/earth",
     "textos/mars",
     "textos/jupiter",
-    "textos/saturno",
+    "textos/saturn",
     "textos/uranus",
     "textos/neptun",
 };
 
-int select_text ;
+int select_text;
 
 char text[20000];
-
-void updateHighlightSphere();
 
 // Calulate the position of every sphere based on the angle and distance
 void calcLocations()
@@ -121,6 +124,26 @@ void calcLocations()
     float tempAngle = (GLMAIN::planetAngle[i] / 180.0) * 3.14159;
     GLMAIN::planetlocations[i][0] = GLMAIN::planetlocations[3][0] + sin(tempAngle) * GLMAIN::planetDistance[i];
     GLMAIN::planetlocations[i][1] = GLMAIN::planetlocations[3][1] + cos(tempAngle) * GLMAIN::planetDistance[i];
+
+    i = 10;
+
+    GLMAIN::planetAngle[i] += GLMAIN::planetSpeed[i];
+    while (GLMAIN::planetAngle[i] > 360.0)
+        GLMAIN::planetAngle[i] -= 360.0;
+    tempAngle = (GLMAIN::planetAngle[i] / 180.0) * 3.14159;
+    GLMAIN::planetlocations[i][0] = GLMAIN::planetlocations[4][0] + sin(tempAngle) * GLMAIN::planetDistance[i];
+    GLMAIN::planetlocations[i][1] = GLMAIN::planetlocations[4][1] + cos(tempAngle) * GLMAIN::planetDistance[i];
+
+    i = 11;
+
+    GLMAIN::planetAngle[i] += GLMAIN::planetSpeed[i];
+    while (GLMAIN::planetAngle[i] > 360.0)
+        GLMAIN::planetAngle[i] -= 360.0;
+    tempAngle = (GLMAIN::planetAngle[i] / 180.0) * 3.14159;
+    GLMAIN::planetlocations[i][0] = GLMAIN::planetlocations[4][0] + sin(tempAngle) * GLMAIN::planetDistance[i];
+    GLMAIN::planetlocations[i][1] = GLMAIN::planetlocations[4][1] + cos(tempAngle) * GLMAIN::planetDistance[i];
+    GLMAIN::planetlocations[i][2] = GLMAIN::planetlocations[4][2] + 1;
+    
 }
 
 // Generate perspective projection matrix
@@ -153,9 +176,9 @@ glm::mat4 projectionMatrix;
 
 glm::mat4 modelMatrix = glm::mat4(3.0f);
 glm::mat4 viewMatrix;
-float x = -60;
-float y = 0;
-float z = 45;
+float theta = 0.0;
+float radius = 60;
+float x, y, z = 40;
 glm::vec3 camPos = glm::vec3(x, y, z);
 // Display method, draw six spheres.
 void initVAO();
@@ -170,6 +193,8 @@ void display(void)
 
     // Init view matrix
     // camera position
+    x = radius * cos(theta);
+    y = radius * sin(theta);
     camPos = glm::vec3(x, y, z);
     const glm::vec3 lookAt(0.0, 0.0, 0.0);
     const glm::vec3 camOffset = lookAt - camPos;
@@ -222,7 +247,7 @@ void display(void)
     glEnable(GL_TEXTURE_2D);
 
     // Draw 6 spheres, the first one is the star
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 12; i++)
     {
         glBindVertexArray(GLMAIN::vao);
         glPatchParameteri(GL_PATCH_VERTICES, 3);
@@ -288,10 +313,7 @@ void display(void)
         glDrawElements(GL_PATCHES, sizeof(GLMAIN::Faces), GL_UNSIGNED_INT, (void *)0);
         glBindTexture(GL_TEXTURE_2D, 0);
     }
-
-
 }
-
 
 void initVAO() // Init vao, vbo.
 {
@@ -409,19 +431,24 @@ int setShaders()
 }
 
 // callback of key event
-void loadtext(){
- FILE *file = fopen(texts[0], "r"); // open the file at the given position
- strcpy(text,"");
-  if (file != NULL) { // check if the file was successfully opened
-    char line[256];
-    while (fgets(line, sizeof(line), file)) { // read each line of the file
-      strcat(text, line); // add the line to the text variable
-      strcat(text, "\n"); // add a newline character
+void loadtext()
+{
+    FILE *file = fopen(texts[select_text], "r"); // open the file at the given position
+    strcpy(text, "");
+    if (file != NULL)
+    { // check if the file was successfully opened
+        char line[256];
+        while (fgets(line, sizeof(line), file))
+        {                       // read each line of the file
+            strcat(text, line); // add the line to the text variable
+            strcat(text, "\n"); // add a newline character
+        }
+        fclose(file); // close the file
     }
-    fclose(file); // close the file
-  } else {
-    fprintf(stderr, "Error: Unable to open file at position %d\n", select_text);
-  }
+    else
+    {
+        fprintf(stderr, "Error: Unable to open file at position %d\n", select_text);
+    }
 }
 
 void keyfunc(GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -432,32 +459,83 @@ void keyfunc(GLFWwindow *window, int key, int scancode, int action, int mods)
     }
     else if (key == GLFW_KEY_UP && action == GLFW_PRESS)
     {
-        if (x < -20)
+        if (radius > 20)
         {
-            x += 5;
-            z -= 5;
+            radius -= 5;
+            z -= 0.5;
+        }
+        else
+        {
+            z -= 1;
         }
     }
     else if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
     {
-        if (x > -60)
+        if (z > 5 && radius < 100)
         {
-            x -= 5;
-            z += 5;
+            radius += 5;
+            z += 0.5;
+        }
+        else
+        {
+
+            z += 1;
         }
     }
-    else if (key == GLFW_KEY_0 && action == GLFW_PRESS){
+    else if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
+    {
+        theta += 0.1;
+    }
+    else if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
+    {
+        theta -= 0.1;
+    }
+    else if (key == GLFW_KEY_0 && action == GLFW_PRESS)
+    {
         select_text = 0;
         loadtext();
-     }
-     else if (key == GLFW_KEY_1 && action == GLFW_PRESS){
-        printf("A\n");
+    }
+    else if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+    {
         select_text = 1;
         loadtext();
-     }
+    }
+    else if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+    {
+        select_text = 2;
+        loadtext();
+    }
+    else if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+    {
+        select_text = 3;
+        loadtext();
+    }
+    else if (key == GLFW_KEY_4 && action == GLFW_PRESS)
+    {
+        select_text = 4;
+        loadtext();
+    }
+    else if (key == GLFW_KEY_5 && action == GLFW_PRESS)
+    {
+        select_text = 5;
+        loadtext();
+    }
+    else if (key == GLFW_KEY_6 && action == GLFW_PRESS)
+    {
+        select_text = 6;
+        loadtext();
+    }
+    else if (key == GLFW_KEY_7 && action == GLFW_PRESS)
+    {
+        select_text = 7;
+        loadtext();
+    }
+    else if (key == GLFW_KEY_8 && action == GLFW_PRESS)
+    {
+        select_text = 8;
+        loadtext();
+    }
 }
-
-
 
 void loadTexture(const char *fileName, int i)
 {
@@ -500,9 +578,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     GLMAIN::frameBufferHeight = height;
 }
 
-
-
-
 // Entry point
 int main(int argc, char *argv[])
 {
@@ -531,8 +606,6 @@ int main(int argc, char *argv[])
     };
     glfwSwapInterval(1);
 
-
-
     // Initialize GLEW
     glewExperimental = true; // Needed for core profile
 
@@ -549,7 +622,6 @@ int main(int argc, char *argv[])
 
     setShaders();
     initVAO();
-    select_text = 0;
 
     static double limitFPS = 1.0 / 30.0; // limit to 30 frames per second
     double lastTime = glfwGetTime();
@@ -575,7 +647,9 @@ int main(int argc, char *argv[])
     ImGui::StyleColorsDark();
     ImVec4 clear_color = ImVec4(0.0f, 0.0f, 0.0f, 0.00f);
     /* Loop until the user closes the window */
+    select_text = 0;
     loadtext();
+
     while (!glfwWindowShouldClose(GLMAIN::window))
     {
         nowTime = glfwGetTime();
@@ -611,6 +685,10 @@ int main(int argc, char *argv[])
 
         // looking for events
         glfwPollEvents();
+        for (int i = 0; i < 12; i++)
+        {
+            glRotatef(GLMAIN::planetAngle[i], 0.0f, 0.0f, 1.0f);
+        }
     }
     glfwTerminate();
     ImGui_ImplOpenGL3_Shutdown();
