@@ -13,10 +13,13 @@ uniform	vec3 Rs = vec3(0.5);			//Specular reflectivity
 uniform	float Shininess = 0.5;	        //Specular shininess factor
 
 
+uniform sampler2D texSampler;	//Texture sampler
+
 in VS_OUT {
     vec3 norm_eye;
     vec3 light_eye;
     vec3 view_eye;
+	vec2 texCoord;		
 };
 
 out vec4 FragColor;
@@ -36,6 +39,7 @@ void main()
 	diffuse = Ld * Rd * sDotN;
 	spec = Ls * Rs * pow( max( dot(r,v) , 0.0 ), Shininess );
 
+	vec4 texColor = texture(texSampler, texCoord);
 	FragColor = vec4( vec3(ambient + diffuse), 1 ) * vec4(planetColor, 1) + vec4( spec, 1 );
 
 
