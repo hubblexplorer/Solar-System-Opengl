@@ -8,7 +8,6 @@ in VS_OUT {
     vec3 norm_eye;
     vec3 light_eye;
     vec3 view_eye;
-    vec2 texCoord;
 } gs_in[];
 
 
@@ -16,7 +15,6 @@ out VS_OUT {
     vec3 norm_eye;
     vec3 light_eye;
     vec3 view_eye;
-    vec2 texCoord;
 };
 
 

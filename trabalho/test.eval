@@ -13,7 +13,7 @@ out VS_OUT {
     vec3 norm_eye;
     vec3 light_eye;
     vec3 view_eye;
-    vec2 texCoord;
+
 };
 
 
@@ -46,7 +46,12 @@ void main() {
     light_eye = normalize(light_eye);
     view_eye  = normalize(view_eye);
 
-    gl_Position = mvp * vec4(tePosition, 1);
+    vec4 aux = vec4(tePosition, 1);
+
+    gl_Position = mvp * aux;
+    
+    
+
 
 
 
